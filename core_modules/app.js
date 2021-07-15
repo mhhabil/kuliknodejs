@@ -26,7 +26,30 @@ const fs = require('fs');
 // console.log(data);
 
 //Membaca file ke string dengan async
-fs.readFile('data/test.txt', 'utf-8',(err, data) => {
-    if (err) throw err;
-    console.log(data);
+// fs.readFile('data/test.txt', 'utf-8',(err, data) => {
+//     if (err) throw err;
+//     console.log(data);
+//   });
+
+//Core Module Readline
+const readline = require('readline');
+
+const rl = readline.Interface({
+  input : process.stdin,
+  output : process.stdout,
+});
+
+rl.question('Siapa nama anda?',(nama) =>{
+  rl.question('Masukkan no HP : ', (nohp) => {
+    const contact = { nama, nohp };
+    const file = fs.readFileSync('data/contacts.json', 'utf-8');
+    const contacts = JSON.parse(file);
+
+    contacts.push(contact);
+
+    fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+    console.log(`Terima kasih ${nama} sudah memasukkan kontak anda`);
+    rl.close();
   });
+
+});
