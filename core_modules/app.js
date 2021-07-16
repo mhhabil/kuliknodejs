@@ -1,6 +1,35 @@
-//Core Modules
-//File System
-const fs = require('fs');
+//Mengambil Argumen
+
+const yargs = require("yargs");
+const { saveContact } = require("./contacts");
+
+yargs.command({
+  command : 'add',
+  describe : 'Create new contact',
+  builder : {
+    nama : {
+      describe : 'Nama Lengkap',
+      demandOption : true,
+      type : 'string',
+    },
+    nohp : {
+      describe : 'Nomor Handphone',
+      demandOption : true,
+      type : 'string',
+    },
+    email : {
+      describe : 'Email',
+      demandOption : false,
+      type : 'string',
+    },
+  },
+  handler(argv) {
+    saveContact(argv.nama, argv.nohp, argv.email);
+    
+  },
+})
+yargs.parse();
+
 
 //menuliskan string ke dalam file dir (synchronous)
 // try {
@@ -31,25 +60,46 @@ const fs = require('fs');
 //     console.log(data);
 //   });
 
-//Core Module Readline
-const readline = require('readline');
 
-const rl = readline.Interface({
-  input : process.stdin,
-  output : process.stdout,
-});
 
-rl.question('Siapa nama anda?',(nama) =>{
-  rl.question('Masukkan no HP : ', (nohp) => {
-    const contact = { nama, nohp };
-    const file = fs.readFileSync('data/contacts.json', 'utf-8');
-    const contacts = JSON.parse(file);
+// const question2 = () => {
+//   return new Promise ((resolve, reject) => {
+//     rl.question('Masukkan Nomor HP : ', (nohp) => {
+//       resolve(nohp);
+//     });
+//   });
+// };
 
-    contacts.push(contact);
+// const question3 = () => {
+//   return new Promise ((resolve, reject) => {
+//     rl.question('Masukkan Email : ', (email) => {
+//       resolve(email);
+//     });
+//   });
+// };
 
-    fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
-    console.log(`Terima kasih ${nama} sudah memasukkan kontak anda`);
-    rl.close();
-  });
+// const {questions, saveContact} = require('./contacts');
+// const main = async () => {
+//   const nama = await questions('Masukkan Nama Anda : ');
+//   const nohp = await questions('Masukkan Email Anda : ');
+//   const email = await questions('Masukkan Nomor Hp Anda : ');
 
-});
+//   saveContact(nama, nohp, email);
+// };
+
+// main();
+
+// rl.question('Siapa nama anda?',(nama) =>{
+//   rl.question('Masukkan no HP : ', (nohp) => {
+//     const contact = { nama, nohp };
+//     const file = fs.readFileSync('data/contacts.json', 'utf-8');
+//     const contacts = JSON.parse(file);
+
+//     contacts.push(contact);
+
+//     fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+//     console.log(`Terima kasih ${nama} sudah memasukkan kontak anda`);
+//     rl.close();
+//   });
+
+// });
