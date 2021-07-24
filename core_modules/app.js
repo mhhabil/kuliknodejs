@@ -1,7 +1,8 @@
 //Mengambil Argumen
 
 const yargs = require("yargs");
-const { saveContact } = require("./contacts");
+// const { saveContact, listContact, detailContact } = require("./contacts");
+const contacts = require("./contacts");
 
 yargs.command({
   command : 'add',
@@ -24,10 +25,52 @@ yargs.command({
     },
   },
   handler(argv) {
-    saveContact(argv.nama, argv.nohp, argv.email);
+    contacts.saveContact(argv.nama, argv.nohp, argv.email);
     
   },
-})
+}).demandCommand();
+
+//Read All Contacts (show contacts)
+yargs.command({
+  command : 'list',
+  describe : 'Show all saved contacts',
+  handler(){
+    contacts.listContact();
+  }
+});
+
+//Show Contact detail
+yargs.command({
+  command : 'detail',
+  describe : 'Show contact details based on input name',
+  builder : {
+    nama : {
+      describe : 'Nama Lengkap',
+      demandOption : true,
+      type : 'string',
+    },
+  },
+  handler(argv){
+    contacts.detailContact(argv.nama);
+  }
+});
+
+//Delete contact based on name
+yargs.command({
+  command : 'delete',
+  describe : 'Delete contact based on name',
+  builder : {
+    nama : {
+      describe : 'Nama Lengkap',
+      demandOption : true,
+      type : 'string',
+    },
+  },
+  handler(argv){
+    contacts.deleteContact(argv.nama);
+  }
+});
+
 yargs.parse();
 
 

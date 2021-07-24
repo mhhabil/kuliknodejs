@@ -32,10 +32,17 @@ if(!fs.existsSync(dirData)){
 //   });
 // };
 
-const saveContact = (nama, nohp, email) => {
-  const contact = { nama, nohp, email };
+const loadContact = () => {
   const file = fs.readFileSync('data/contacts.json', 'utf-8');
   const contacts = JSON.parse(file);
+  return contacts;
+}
+
+const saveContact = (nama, nohp, email) => {
+  const contact = { nama, nohp, email };
+  // const file = fs.readFileSync('data/contacts.json', 'utf-8');
+  // const contacts = JSON.parse(file);
+  const contacts = loadContact();
   
   //cek duplikasi
   const duplicate = contacts.find((contact) => contact.nama === nama);
@@ -63,4 +70,49 @@ const saveContact = (nama, nohp, email) => {
   console.log(chalk.green.inverse('Kontak Berhasil Dibuat'));
 };
 
-module.exports = {saveContact};
+const listContact = () => {
+  const contacts = loadContact();
+  console.log(chalk.blue.inverse('Your Contacts'));
+  contacts.forEach((contact, i) => {
+    console.log(`${i + 1}. ${contact.nama} - ${contact.nohp}`);
+  })
+}
+
+const detailContact = (nama) => {
+  const contacts = loadContact();
+
+  const contact = contacts.find(
+    (contact) => contact.nama.toLowerCase() === nama.toLowerCase()
+  );
+
+  if(!contact){
+    console.log(chalk.red.inverse.bold(`Cannot find contact name : ${nama}!`));
+  return false;
+  }
+
+  console.log(chalk.white.inverse.italic(contact.nama));
+  console.log(contact.nohp);
+  if(contact.email){
+    console.log(contact.email);
+  }
+
+
+}
+
+const deleteContact = (nama) => {
+  const contacts = loadContact();
+
+  const newContacts = contacts.filter(
+    (contact) => contact.nama.toLowerCase() !== nama.toLowerCase()
+  );
+
+  if(contacts.length === newContacts.length){
+    console.log(chalk.red.inverse.bold(`Cannot find contact name : ${nama}!`));
+  return false;
+  }
+
+  fs.writeFileSync('data/contacts.json', JSON.stringify(newContacts));
+  console.log(chalk.green.inverse(`${nama} has been deleted`));
+};
+
+module.exports = {saveContact, listContact, detailContact, deleteContact};
